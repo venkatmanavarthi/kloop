@@ -1,12 +1,5 @@
-:root {
-  /* Keep --bg in sync with BACKGROUND in src/main/index.ts. */
-  --bg: #0a0a0a;
-  --fg: #f5f5f5;
-  --muted: #8a8a8a;
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  color-scheme: dark;
-}
+@import "../../shared/theme.css";
+@import "../../shared/intro.css";
 
 *,
 *::before,
@@ -22,57 +15,15 @@ body {
   overflow: hidden;
   background: var(--bg);
   color: var(--fg);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Inter, Roboto, sans-serif;
+  font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   user-select: none;
 }
 
-/* ───────────────────────── Intro ───────────────────────── */
-
-.intro {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  background: var(--bg);
-  animation: intro-out 0.7s var(--ease-in-out) 2.75s forwards;
-}
-
-/* Hold every animation until the window is actually on screen (see app.ts). */
-html:not(.play) .intro,
-html:not(.play) .intro *,
+/* Hold the views' fade-in until the intro starts (intro.css pauses the intro itself). */
 html:not(.play) .onboarding,
 html:not(.play) .app {
   animation-play-state: paused !important;
-}
-
-/* The dotted wordmark is drawn here by app.ts. */
-.dots {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.tagline {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(50% + min(8vw, 92px));
-  color: var(--muted);
-  font-size: 15px;
-  letter-spacing: 0.02em;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fade-up 0.6s var(--ease-out) 1.9s forwards;
-}
-
-@keyframes fade-up {
-  to { opacity: 1; transform: none; }
-}
-
-@keyframes intro-out {
-  to { opacity: 0; transform: scale(1.06); visibility: hidden; }
 }
 
 /* ───────────────────────── Views ───────────────────────── */
@@ -90,12 +41,35 @@ html:not([data-view="app"]) .app {
 /* ───────────────────────── Onboarding ───────────────────────── */
 
 .onboarding {
+  position: relative;
   height: 100%;
   display: flex;
   flex-direction: column;
   opacity: 0;
   transform: translateY(12px);
   animation: fade-up 0.7s var(--ease-out) 2.95s forwards;
+}
+
+/* The swinging dotted blanket, drawn by shared/blanket.ts. Faded toward the middle so the steps stay readable. */
+.blanket {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 50% 55% at 50% 52%, #0006 25%, #000 100%);
+  mask-image: radial-gradient(ellipse 50% 55% at 50% 52%, #0006 25%, #000 100%);
+}
+
+.onboarding > .topbar,
+.onboarding > .steps {
+  position: relative;
+}
+
+/* Small dotted wordmark; shared/wordmark.ts sizes the width to fit. */
+.wordmark {
+  display: block;
+  height: 18px;
 }
 
 .topbar .progress {
@@ -568,10 +542,6 @@ html:not([data-view="app"]) .app {
 
 /* ───────────────────────── Skip & reduced motion ───────────────────────── */
 
-html.skip .intro {
-  animation: intro-out 0.3s ease forwards !important;
-}
-
 html.skip .onboarding,
 html.skip .app {
   animation: fade-up 0.4s var(--ease-out) 0.1s forwards !important;
@@ -583,10 +553,6 @@ html.handoff .app {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .intro {
-    display: none;
-  }
-
   .onboarding,
   .app,
   html.handoff .app {

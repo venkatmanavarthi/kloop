@@ -1,0 +1,325 @@
+@import "../shared/theme.css";
+@import "../shared/intro.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Keep the page still under the intro; it fades in as the intro leaves. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.skip) body:has(.intro) {
+    overflow: hidden;
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ───────────────────────── Page ───────────────────────── */
+
+.page {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fade-up 0.7s var(--ease-out) 2.95s forwards;
+}
+
+html:not(.play) .page {
+  animation-play-state: paused !important;
+}
+
+html.skip .page {
+  animation: fade-up 0.4s var(--ease-out) 0.1s forwards !important;
+}
+
+.eyebrow {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.lede {
+  max-width: 520px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-size: 14.5px;
+  font-weight: 600;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn--primary {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.btn--primary:hover {
+  background: #fff;
+}
+
+.btn--ghost {
+  border: 1px solid #ffffff2e;
+}
+
+.btn--ghost:hover {
+  border-color: #ffffff66;
+  background: #ffffff0a;
+}
+
+/* ───────────────────────── Nav ───────────────────────── */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px clamp(16px, 4vw, 40px);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Small dotted wordmark; shared/wordmark.ts sizes the width to fit. */
+.wordmark {
+  display: block;
+  height: 18px;
+}
+
+.nav__links {
+  display: flex;
+  gap: clamp(14px, 3vw, 28px);
+  font-size: 14px;
+}
+
+.nav__links a {
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+.nav__links a:hover {
+  color: var(--fg);
+}
+
+/* ───────────────────────── Hero ───────────────────────── */
+
+.hero {
+  position: relative;
+  min-height: calc(100svh - 50px);
+  display: grid;
+  place-items: center;
+  padding: 48px 16px 96px;
+  overflow: hidden;
+}
+
+/* The swinging dotted blanket, drawn by shared/blanket.ts. Faded toward the middle so the text stays readable. */
+.blanket {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 50% 55% at 50% 50%, #0004 25%, #000 100%);
+  mask-image: radial-gradient(ellipse 50% 55% at 50% 50%, #0004 25%, #000 100%);
+}
+
+.hero__body {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  text-align: center;
+}
+
+.hero h1 {
+  max-width: 14ch;
+  font-size: clamp(40px, 7vw, 76px);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.hero .actions {
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* ───────────────────────── Sections ───────────────────────── */
+
+.section {
+  display: grid;
+  gap: 14px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: clamp(64px, 10vw, 120px) clamp(16px, 4vw, 40px);
+  border-top: 1px solid #ffffff14;
+}
+
+.section h2 {
+  max-width: 20ch;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 750;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 28px;
+  list-style: none;
+}
+
+.card {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 22px;
+  border: 1px solid #ffffff1f;
+  border-radius: 14px;
+  background: #ffffff08;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.card:hover {
+  border-color: #ffffff3a;
+  background: #ffffff0d;
+}
+
+.card__num {
+  margin-bottom: 18px;
+  color: var(--muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.card h3 {
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+  list-style: none;
+}
+
+.fields li {
+  padding: 8px 14px;
+  border: 1px solid #ffffff24;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.section--split {
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.section--split .actions {
+  margin-top: 22px;
+}
+
+/* ───────────────────────── Footer ───────────────────────── */
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 28px clamp(16px, 4vw, 40px) 40px;
+  border-top: 1px solid #ffffff14;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.footer a:hover {
+  color: var(--fg);
+}
+
+/* ───────────────────────── Small screens & reduced motion ───────────────────────── */
+
+@media (max-width: 760px) {
+  .cards,
+  .section--split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .section--split {
+    gap: 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .nav__links a:not(:last-child) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .page {
+    opacity: 1;
+    transform: none;
+    animation: none !important;
+  }
+}

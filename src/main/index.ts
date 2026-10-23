@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu } from "electron";
+import { app, BrowserWindow, Menu, screen } from "electron";
 import { closeHelper, registerOnboarding } from "./onboarding";
 import { BACKGROUND, distFile, webPreferences } from "./shared";
 
@@ -14,9 +14,10 @@ if (process.platform === "win32") app.setAppUserModelId(app.isPackaged ? "com.kr
 let win: BrowserWindow | null = null;
 
 function createWindow() {
+  // Fill the work area (screen minus dock and menu bar) of the display the user is on.
+  const { workArea } = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
   win = new BrowserWindow({
-    width: 1100,
-    height: 720,
+    ...workArea,
     minWidth: 720,
     minHeight: 480,
     show: false,

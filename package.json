@@ -11,6 +11,8 @@
     "build": "bun scripts/build.ts",
     "start": "bun run build && electron .",
     "onboarding": "bun run build && bun scripts/onboarding.ts",
+    "web:dev": "bun website/index.html",
+    "web:build": "bun scripts/build-web.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
