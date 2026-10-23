@@ -40,6 +40,7 @@ body {
 /* Hold every animation until the window is actually on screen (see app.ts). */
 html:not(.play) .intro,
 html:not(.play) .intro *,
+html:not(.play) .onboarding,
 html:not(.play) .app {
   animation-play-state: paused !important;
 }
@@ -72,6 +73,415 @@ html:not(.play) .app {
 
 @keyframes intro-out {
   to { opacity: 0; transform: scale(1.06); visibility: hidden; }
+}
+
+/* ───────────────────────── Views ───────────────────────── */
+
+/* app.ts picks one once it knows whether onboarding is done. */
+html:not([data-view="onboarding"]) .onboarding,
+html:not([data-view="app"]) .app {
+  display: none;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ───────────────────────── Onboarding ───────────────────────── */
+
+.onboarding {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fade-up 0.7s var(--ease-out) 2.95s forwards;
+}
+
+.topbar .progress {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  list-style: none;
+}
+
+.progress li {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff2e;
+  transition: background 0.4s var(--ease-out), width 0.4s var(--ease-out);
+}
+
+.progress li.is-done {
+  background: var(--fg);
+}
+
+.steps {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 0 24px 48px;
+}
+
+/* Steps share one grid cell so they can cross-fade in place. */
+.step {
+  grid-area: 1 / 1;
+  width: min(520px, 100%);
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(24px);
+  transition:
+    opacity 0.45s var(--ease-out),
+    transform 0.6s var(--ease-out),
+    visibility 0s linear 0.45s;
+}
+
+.step.is-past {
+  transform: translateX(-24px);
+}
+
+.step.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0.08s, 0.08s, 0s;
+}
+
+.eyebrow {
+  margin-top: 32px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.step h2 {
+  margin-top: 10px;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: 440px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  padding: 6px 12px;
+  border: 1px solid #ffffff1f;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ffffff3d;
+}
+
+.status[data-state="wait"]::before {
+  background: var(--fg);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.status[data-state="on"] {
+  border-color: #ffffff47;
+  color: var(--fg);
+}
+
+.status[data-state="on"]::before {
+  background: var(--fg);
+  box-shadow: 0 0 0 3px #ffffff24;
+}
+
+@keyframes pulse {
+  50% { opacity: 0.25; }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.btn {
+  height: 38px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+.btn--primary {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.btn--primary:hover {
+  background: #fff;
+}
+
+.btn--ghost {
+  border-color: #ffffff1f;
+  color: var(--muted);
+}
+
+.btn--ghost:hover {
+  border-color: #ffffff3d;
+  color: var(--fg);
+}
+
+.hint {
+  max-width: 400px;
+  margin-top: 16px;
+  color: #6e6e6e;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+/* A miniature Screen & System Audio Recording list: an app tile drops into the empty slot and gets switched on. */
+.mock {
+  width: 300px;
+  border: 1px solid #ffffff1f;
+  border-radius: 12px;
+  background: #ffffff06;
+  text-align: left;
+}
+
+.mock__bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 12px;
+  border-bottom: 1px solid #ffffff14;
+}
+
+.mock__bar i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ffffff2e;
+}
+
+.mock__bar span {
+  margin-left: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.mock__list {
+  padding: 6px;
+  list-style: none;
+}
+
+.mock__list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+
+.mock__list b {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #ffffff1f;
+}
+
+.mock__list span {
+  width: 90px;
+  height: 7px;
+  border-radius: 4px;
+  background: #ffffff1a;
+}
+
+.mock__list li:nth-child(2) span {
+  width: 64px;
+}
+
+.mock__list em {
+  position: relative;
+  width: 26px;
+  height: 15px;
+  margin-left: auto;
+  border-radius: 8px;
+  background: #ffffff1f;
+}
+
+.mock__list em::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #8a8a8a;
+}
+
+.mock__slot {
+  animation: slot 4.2s var(--ease-in-out) infinite;
+}
+
+/* The tile flies in from the right, as if dragged from the floating panel. */
+.mock__slot b {
+  background: var(--fg);
+  animation: tile 4.2s var(--ease-out) infinite;
+}
+
+.mock__slot span,
+.mock__slot em {
+  animation: reveal 4.2s ease infinite;
+}
+
+.mock__slot span {
+  background: #ffffff59;
+}
+
+.mock__slot em,
+.mock__slot em::after {
+  animation: toggle 4.2s var(--ease-out) infinite;
+}
+
+.mock__slot em::after {
+  animation-name: knob;
+}
+
+@keyframes slot {
+  0%, 40% { border-color: #ffffff38; border-style: dashed; }
+  50%, 100% { border-color: transparent; }
+}
+
+@keyframes tile {
+  0% { transform: translate(230px, -80px) scale(1.2); opacity: 0; }
+  10% { opacity: 1; }
+  45%, 92% { transform: none; opacity: 1; }
+  100% { transform: none; opacity: 0; }
+}
+
+@keyframes reveal {
+  0%, 45% { opacity: 0; }
+  55%, 92% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes toggle {
+  0%, 62% { background: #ffffff1f; opacity: 0; }
+  55% { opacity: 1; }
+  72%, 92% { background: var(--fg); opacity: 1; }
+  100% { background: var(--fg); opacity: 0; }
+}
+
+@keyframes knob {
+  0%, 62% { transform: none; background: #8a8a8a; }
+  72%, 100% { transform: translateX(11px); background: var(--bg); }
+}
+
+/* Once permission is granted, freeze on the finished state. */
+.mock.is-done .mock__slot,
+.mock.is-done .mock__slot *,
+.mock.is-done .mock__slot em::after {
+  animation: none;
+}
+
+.mock.is-done .mock__slot em {
+  background: var(--fg);
+}
+
+.mock.is-done .mock__slot em::after {
+  transform: translateX(11px);
+  background: var(--bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mock .mock__slot,
+  .mock .mock__slot *,
+  .mock .mock__slot em::after,
+  .toast-mock {
+    animation: none;
+  }
+}
+
+/* A notification banner, for the notifications step. */
+.toast-mock {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 300px;
+  padding: 12px 14px;
+  border: 1px solid #ffffff1f;
+  border-radius: 14px;
+  background: #ffffff0a;
+  text-align: left;
+  animation: toast 3.6s var(--ease-out) infinite;
+}
+
+.toast-mock b {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border: 1.5px dotted #ffffff73;
+  border-radius: 8px;
+}
+
+.toast-mock div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.toast-mock strong {
+  font-size: 12.5px;
+  font-weight: 650;
+}
+
+.toast-mock span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@keyframes toast {
+  0% { transform: translateY(-14px); opacity: 0; }
+  14%, 82% { transform: none; opacity: 1; }
+  100% { transform: translateY(-6px); opacity: 0; }
 }
 
 /* ───────────────────────── App shell ───────────────────────── */
@@ -162,8 +572,14 @@ html.skip .intro {
   animation: intro-out 0.3s ease forwards !important;
 }
 
+html.skip .onboarding,
 html.skip .app {
   animation: fade-up 0.4s var(--ease-out) 0.1s forwards !important;
+}
+
+/* Onboarding finished: the app was hidden until now, so fade it in straight away. */
+html.handoff .app {
+  animation: fade-up 0.6s var(--ease-out) forwards !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -171,9 +587,15 @@ html.skip .app {
     display: none;
   }
 
-  .app {
+  .onboarding,
+  .app,
+  html.handoff .app {
     opacity: 1;
     transform: none;
-    animation: none;
+    animation: none !important;
+  }
+
+  .step {
+    transition: none;
   }
 }

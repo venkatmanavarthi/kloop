@@ -17,6 +17,69 @@
       <p class="tagline">Interviews, resumes and applications, for any job.</p>
     </div>
 
+    <div class="onboarding" id="onboarding">
+      <header class="topbar">
+        <span class="topbar__name">KrackLoop</span>
+        <ol class="progress" id="progress" aria-label="Setup progress"></ol>
+      </header>
+
+      <main class="steps">
+        <section class="step" data-step="screen" aria-labelledby="screen-title">
+          <div class="mock" aria-hidden="true">
+            <div class="mock__bar"><i></i><i></i><i></i><span>Screen &amp; System Audio Recording</span></div>
+            <ul class="mock__list">
+              <li><b></b><span></span><em></em></li>
+              <li><b></b><span></span><em></em></li>
+              <li class="mock__slot"><b></b><span></span><em></em></li>
+            </ul>
+          </div>
+
+          <p class="eyebrow">Permission</p>
+          <h2 id="screen-title">Let KrackLoop see and hear your screen</h2>
+          <p class="lede">
+            So it can follow the interview or application in front of you, including what the
+            interviewer says. Nothing is recorded or shared unless you start a session.
+          </p>
+          <p class="status" data-status data-state="off">Not enabled yet</p>
+
+          <div class="actions">
+            <button class="btn btn--primary" data-action="screen-open">Open System Settings</button>
+            <button class="btn btn--primary" data-action="next" hidden>Continue</button>
+            <button class="btn btn--ghost" data-action="relaunch" hidden>Restart KrackLoop</button>
+            <button class="btn btn--ghost" data-action="skip">Skip for now</button>
+          </div>
+          <p class="hint" data-hint>
+            KrackLoop will step aside and leave a small panel with its icon. Drag the icon into the
+            Screen &amp; System Audio Recording list and switch it on. macOS then restarts KrackLoop
+            once, and you'll land back here.
+          </p>
+        </section>
+
+        <section class="step" data-step="notifications" aria-labelledby="notifications-title">
+          <div class="toast-mock" aria-hidden="true">
+            <b></b>
+            <div><strong>KrackLoop</strong><span>Your mock interview starts in 5 minutes.</span></div>
+          </div>
+
+          <p class="eyebrow">Permission</p>
+          <h2 id="notifications-title">Stay in the loop</h2>
+          <p class="lede">
+            Get a nudge before a practice session, when a tailored resume is ready, or when an
+            application needs your input.
+          </p>
+          <p class="status" data-status data-state="off">Not tested yet</p>
+
+          <div class="actions">
+            <button class="btn btn--primary" data-action="notify-test">Send a test notification</button>
+            <button class="btn btn--primary" data-action="next" hidden>Continue</button>
+            <button class="btn btn--ghost" data-action="notify-settings" hidden>Open notification settings</button>
+            <button class="btn btn--ghost" data-action="skip">Skip for now</button>
+          </div>
+          <p class="hint" data-hint></p>
+        </section>
+      </main>
+    </div>
+
     <div class="app" id="app">
       <header class="topbar">
         <span class="topbar__name">KrackLoop</span>

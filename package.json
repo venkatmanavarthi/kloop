@@ -10,6 +10,7 @@
     "postinstall": "bun node_modules/electron/install.js",
     "build": "bun scripts/build.ts",
     "start": "bun run build && electron .",
+    "onboarding": "bun run build && bun scripts/onboarding.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

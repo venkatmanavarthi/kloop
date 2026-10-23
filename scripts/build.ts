@@ -16,9 +16,20 @@ const builds = await Promise.all([
     external: ["electron"],
     minify: production,
   }),
-  // Renderer: Bun bundles the HTML entry together with its CSS and TS.
+  // Preload: sandboxed, so it may only require "electron" — everything else is bundled in.
   Bun.build({
-    entrypoints: ["src/renderer/index.html"],
+    entrypoints: ["src/preload/index.ts"],
+    outdir,
+    naming: "preload.cjs",
+    target: "node",
+    format: "cjs",
+    external: ["electron"],
+    minify: production,
+  }),
+  // Renderer: Bun bundles each HTML entry together with its CSS and TS.
+  // drag.html is the floating panel used during the macOS Screen Recording step.
+  Bun.build({
+    entrypoints: ["src/renderer/index.html", "src/renderer/drag.html"],
     outdir: `${outdir}/renderer`,
     publicPath: "./",
     minify: production,

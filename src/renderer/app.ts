@@ -1,3 +1,5 @@
+import { startOnboarding } from "./onboarding";
+
 const root = document.documentElement;
 const intro = document.getElementById("intro");
 const canvas = document.getElementById("dots") as HTMLCanvasElement | null;
@@ -197,6 +199,12 @@ function startDots(canvas: HTMLCanvasElement) {
   requestAnimationFrame(frame);
 }
 
+// Jumps past the intro straight to whichever view is showing.
+function skip() {
+  play();
+  root.classList.add("skip");
+}
+
 // The window is created hidden and shown on first paint, so start the intro only
 // once it is actually visible — otherwise the first frames play off screen.
 function play() {
@@ -214,10 +222,21 @@ if (intro && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
   });
 
   // Any click or key skips straight to the app.
-  const skip = () => {
-    play();
-    root.classList.add("skip");
-  };
   window.addEventListener("pointerdown", skip, { once: true });
   window.addEventListener("keydown", skip, { once: true });
 }
+
+// First run shows onboarding in place of the app; the intro plays over whichever view is chosen.
+window.krackloop.onboarding.state().then((state) => {
+  if (state.completed) {
+    root.dataset.view = "app";
+    return;
+  }
+  root.dataset.view = "onboarding";
+  // Coming back mid-onboarding (e.g. macOS's "Quit & Reopen") shouldn't replay the intro.
+  if (state.step) skip();
+  startOnboarding(state, () => {
+    root.classList.add("handoff");
+    root.dataset.view = "app";
+  });
+}).catch(() => (root.dataset.view = "app"));

@@ -1,0 +1,16 @@
+import { app, type WebPreferences } from "electron";
+import { join } from "node:path";
+
+// Matches --bg in styles.css so windows never flash white before the first paint.
+export const BACKGROUND = "#0a0a0a";
+
+// Bun inlines __dirname at build time, so resolve from the app root instead.
+export const distFile = (...parts: string[]) => join(app.getAppPath(), "dist", ...parts);
+
+export const webPreferences = (): WebPreferences => ({
+  preload: distFile("preload.cjs"),
+  sandbox: true,
+  contextIsolation: true,
+  nodeIntegration: false,
+  spellcheck: false,
+});

@@ -1,0 +1,349 @@
+:root {
+  --fg: #f5f5f5;
+  --muted: #8a8a8a;
+  --bg: #0a0a0a;
+  --loop: 5s;
+  --ease: cubic-bezier(0.65, 0, 0.35, 1);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* The window is transparent; only the panel is drawn. */
+html,
+body {
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+.panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ffffff1f;
+  border-radius: 16px;
+  background: #141414;
+  color: var(--fg);
+  /* The panel itself moves the window; the tile and button opt out. */
+  -webkit-app-region: drag;
+}
+
+/* ───────────── Demo ───────────── */
+
+.demo {
+  position: relative;
+  height: 128px;
+  margin: 14px 14px 0;
+  border-radius: 10px;
+  background: #ffffff05;
+  overflow: hidden;
+}
+
+.win {
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  right: 20px;
+  border: 1px solid #ffffff1f;
+  border-radius: 8px;
+  background: #1b1b1b;
+}
+
+.win__bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 9px;
+  border-bottom: 1px solid #ffffff14;
+}
+
+.win__bar i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff2e;
+}
+
+.win__bar span {
+  margin-left: 6px;
+  color: var(--muted);
+  font-size: 9.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.win__list {
+  padding: 4px;
+  list-style: none;
+}
+
+.win__list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+}
+
+.win__list b {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: #ffffff1f;
+}
+
+.win__list span {
+  width: 70px;
+  height: 6px;
+  border-radius: 3px;
+  background: #ffffff1a;
+}
+
+.win__list em {
+  position: relative;
+  width: 22px;
+  height: 13px;
+  margin-left: auto;
+  border-radius: 7px;
+  background: #ffffff1f;
+}
+
+.win__list em::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+/* The empty row waiting for the drop. */
+.slot {
+  animation: slot var(--loop) var(--ease) infinite;
+}
+
+.slot b {
+  opacity: 0;
+}
+
+.slot span {
+  background: #ffffff59;
+  animation: reveal var(--loop) ease infinite;
+}
+
+.slot em {
+  animation: reveal var(--loop) ease infinite, toggle var(--loop) var(--ease) infinite;
+}
+
+.slot em::after {
+  animation: knob var(--loop) var(--ease) infinite;
+}
+
+/* The icon being dragged, with a cursor holding it. Its resting spot is the slot's icon. */
+.ghost {
+  position: absolute;
+  top: 76px;
+  left: 34px;
+  width: 16px;
+  height: 16px;
+  animation: drag var(--loop) var(--ease) infinite;
+}
+
+.ghost img {
+  width: 100%;
+  height: 100%;
+}
+
+.cursor {
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  animation: cursor var(--loop) ease infinite;
+}
+
+@keyframes drag {
+  0% { transform: translate(108px, 26px) scale(1.4); opacity: 0; }
+  8%, 14% { transform: translate(108px, 26px) scale(1.4); opacity: 1; }
+  48% { transform: translate(0, 0) scale(1.25); }
+  54%, 92% { transform: none; opacity: 1; }
+  100% { transform: none; opacity: 0; }
+}
+
+@keyframes cursor {
+  0%, 52% { opacity: 1; }
+  60%, 100% { opacity: 0; }
+}
+
+@keyframes slot {
+  0%, 46% { border-color: #ffffff38; border-style: dashed; background: none; }
+  30%, 46% { background: #ffffff0d; }
+  54%, 100% { border-color: transparent; background: none; }
+}
+
+@keyframes reveal {
+  0%, 50% { opacity: 0; }
+  58%, 92% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes toggle {
+  0%, 66% { background: #ffffff1f; }
+  74%, 100% { background: var(--fg); }
+}
+
+@keyframes knob {
+  0%, 66% { transform: none; background: var(--muted); }
+  74%, 100% { transform: translateX(9px); background: var(--bg); }
+}
+
+/* ───────────── Captions, in step with the demo ───────────── */
+
+.captions {
+  display: grid;
+  gap: 6px;
+  margin: 12px 18px 0;
+  list-style: none;
+  font-size: 12.5px;
+}
+
+.captions li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.captions span {
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.captions__drag {
+  animation: caption-drag var(--loop) ease infinite;
+}
+
+.captions__on {
+  animation: caption-on var(--loop) ease infinite;
+}
+
+@keyframes caption-drag {
+  0%, 56% { color: var(--fg); }
+  64%, 100% { color: var(--muted); }
+}
+
+@keyframes caption-on {
+  0%, 62% { color: var(--muted); }
+  70%, 96% { color: var(--fg); }
+  100% { color: var(--muted); }
+}
+
+.note {
+  margin: 10px 18px 0;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.note b {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* ───────────── The real, draggable icon ───────────── */
+
+.source {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: auto;
+  padding: 14px 16px;
+  border-top: 1px solid #ffffff14;
+}
+
+.tile {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border: 1.5px dotted #ffffff59;
+  border-radius: 14px;
+  cursor: grab;
+  -webkit-app-region: no-drag;
+  animation: nudge 2.4s var(--ease) infinite;
+}
+
+.tile:hover {
+  border-color: var(--fg);
+  animation-play-state: paused;
+}
+
+.tile:active {
+  cursor: grabbing;
+}
+
+.tile img {
+  width: 50px;
+  height: 50px;
+  pointer-events: none;
+}
+
+.text {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.text strong {
+  font-size: 13.5px;
+  font-weight: 650;
+}
+
+.back {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  -webkit-app-region: no-drag;
+}
+
+.back:hover {
+  color: var(--fg);
+}
+
+.back:focus-visible {
+  outline: 1px solid var(--fg);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@keyframes nudge {
+  0%, 60%, 100% { transform: none; }
+  30% { transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile {
+    animation: none;
+  }
+}
