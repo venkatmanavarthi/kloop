@@ -40,18 +40,39 @@ a:focus-visible {
 
 /* ───────────────────────── Page ───────────────────────── */
 
-.page {
+.page,
+.blanket {
   opacity: 0;
   transform: translateY(12px);
   animation: fade-up 0.7s var(--ease-out) 2.95s forwards;
 }
 
-html:not(.play) .page {
+html:not(.play) .page,
+html:not(.play) .blanket {
   animation-play-state: paused !important;
 }
 
-html.skip .page {
+html.skip .page,
+html.skip .blanket {
   animation: fade-up 0.4s var(--ease-out) 0.1s forwards !important;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+}
+
+/* The swinging dotted blanket behind the whole site, drawn by shared/blanket.ts.
+   Fixed to the viewport and faded toward the middle so text stays readable while scrolling. */
+.blanket {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 50% 55% at 50% 50%, #0004 25%, #000 100%);
+  mask-image: radial-gradient(ellipse 50% 55% at 50% 50%, #0004 25%, #000 100%);
 }
 
 .eyebrow {
@@ -153,22 +174,9 @@ html.skip .page {
   display: grid;
   place-items: center;
   padding: 48px 16px 96px;
-  overflow: hidden;
-}
-
-/* The swinging dotted blanket, drawn by shared/blanket.ts. Faded toward the middle so the text stays readable. */
-.blanket {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  -webkit-mask-image: radial-gradient(ellipse 50% 55% at 50% 50%, #0004 25%, #000 100%);
-  mask-image: radial-gradient(ellipse 50% 55% at 50% 50%, #0004 25%, #000 100%);
 }
 
 .hero__body {
-  position: relative;
   display: grid;
   justify-items: center;
   gap: 18px;
@@ -186,6 +194,16 @@ html.skip .page {
 .hero .actions {
   justify-content: center;
   margin-top: 8px;
+}
+
+.link {
+  color: var(--muted);
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: var(--fg);
 }
 
 /* ───────────────────────── Sections ───────────────────────── */
@@ -317,7 +335,8 @@ html.skip .page {
     scroll-behavior: auto;
   }
 
-  .page {
+  .page,
+  .blanket {
     opacity: 1;
     transform: none;
     animation: none !important;
