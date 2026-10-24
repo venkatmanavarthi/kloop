@@ -13,6 +13,7 @@
     "onboarding": "bun run build && bun scripts/onboarding.ts",
     "icon": "bun scripts/icon.ts",
     "web:dev": "bun website/index.html",
+    "web:dev:site": "bun website/site.html",
     "web:build": "bun scripts/build-web.ts",
     "typecheck": "tsc --noEmit"
   },

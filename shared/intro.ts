@@ -133,16 +133,22 @@ function layout(canvas: HTMLCanvasElement): Layout {
 }
 
 // Plays the intro once on the canvas. A resize mid-intro re-lays out the word
-// without restarting the timeline.
-export function startIntro(canvas: HTMLCanvasElement) {
+// without restarting the timeline. Pass `finished` to draw only the final frame.
+export function startIntro(canvas: HTMLCanvasElement, finished = false) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
   let L = layout(canvas);
-  const onResize = () => (L = layout(canvas));
+  let done = false;
+  // Once finished, a resize redraws the final frame so a word left on screen stays sharp.
+  const onResize = () => {
+    if (!canvas.isConnected) return removeEventListener("resize", onResize);
+    L = layout(canvas);
+    if (done) requestAnimationFrame(frame);
+  };
   addEventListener("resize", onResize);
 
-  const start = performance.now();
+  const start = performance.now() - (finished ? END * 1000 : 0);
 
   function frame(now: number) {
     if (!canvas.isConnected) return removeEventListener("resize", onResize);
@@ -214,7 +220,7 @@ export function startIntro(canvas: HTMLCanvasElement) {
 
     ctx!.globalAlpha = 1;
     if (t < END) requestAnimationFrame(frame);
-    else removeEventListener("resize", onResize);
+    else done = true;
   }
 
   requestAnimationFrame(frame);
