@@ -1,6 +1,6 @@
 import { app, BrowserWindow, Menu, screen } from "electron";
 import { closeHelper, registerOnboarding } from "./onboarding";
-import { BACKGROUND, distFile, webPreferences } from "./shared";
+import { BACKGROUND, distFile, iconFile, webPreferences } from "./shared";
 
 // A second launch should focus the existing window, not boot another app.
 if (!app.requestSingleInstanceLock()) app.exit(0);
@@ -23,6 +23,8 @@ function createWindow() {
     show: false,
     backgroundColor: BACKGROUND,
     titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "default",
+    // macOS takes the window icon from the app bundle; Windows and Linux read it from here.
+    icon: process.platform === "darwin" ? undefined : iconFile(process.platform === "win32" ? "icon.ico" : "icon.png"),
     webPreferences: webPreferences(),
   });
 
@@ -42,7 +44,11 @@ app.on("second-instance", () => {
 });
 
 registerOnboarding(() => win);
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  // A packaged app gets assets/icon.icns from its bundle; unpackaged, the Dock would show Electron's.
+  if (process.platform === "darwin" && !app.isPackaged) app.dock?.setIcon(iconFile("icon.png"));
+  createWindow();
+});
 
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
