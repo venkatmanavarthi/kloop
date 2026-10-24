@@ -227,9 +227,9 @@ export function startIntro(canvas: HTMLCanvasElement, finished = false) {
 }
 
 // Wires up the #intro overlay (see intro.css): plays once the page is visible, removes
-// itself when done, and any click or key skips it. Returns skip() for pages that need
-// to jump past it themselves.
-export function mountIntro() {
+// itself when done, and any click or key skips it unless `skippable` is false. Returns
+// skip() for pages that need to jump past it themselves.
+export function mountIntro(skippable = true) {
   const root = document.documentElement;
   const intro = document.getElementById("intro");
   const canvas = document.getElementById("dots") as HTMLCanvasElement | null;
@@ -255,8 +255,10 @@ export function mountIntro() {
       if (event.target === intro && event.animationName === "intro-out") intro.remove();
     });
 
-    window.addEventListener("pointerdown", skip, { once: true });
-    window.addEventListener("keydown", skip, { once: true });
+    if (skippable) {
+      window.addEventListener("pointerdown", skip, { once: true });
+      window.addEventListener("keydown", skip, { once: true });
+    }
   }
 
   return skip;
